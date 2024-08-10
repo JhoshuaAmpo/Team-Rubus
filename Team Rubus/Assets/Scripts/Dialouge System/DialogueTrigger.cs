@@ -17,20 +17,25 @@ public class DialogueTrigger : MonoBehaviour
 
     private void Awake() {
         playerInRange = false;
-        visualCue.SetActive(false);
+        // visualCue.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other) {
+        Debug.Log(other.name +  " has entered my box!");
         if (other.CompareTag("Player")) {
             playerInRange = true;
-            visualCue.SetActive(true);
+            // visualCue.SetActive(true);
+            DialogueManager.Instance.EnterDialogueMode(inkJSON);
         }
     }
 
     private void OnTriggerExit(Collider other) {
+        Debug.Log(other.name +  " has exited my box!");
         if (other.CompareTag("Player")) {
             playerInRange = false;
-            visualCue.SetActive(false);
+            // visualCue.SetActive(false);
         }
     }
+
+    
 }
