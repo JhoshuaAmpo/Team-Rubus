@@ -13,14 +13,9 @@ public class PlayerSideScrollMovement : MonoBehaviour
     [SerializeField]
     private float jumpForce;
     [SerializeField]
-    [Range(0, 10)]
     [Tooltip("Determines additional gravity to be applied. 0 = Normal Gravity, 1 = Double Gravity")]
-    private float additionalGravityMultiplier;
-
-    [SerializeField]
-    float m_MaxDistance;
-    [SerializeField]
-    Vector3 m_HitBox;
+    [Range(0, 10)]
+    private float gravMult;
 
     // [SerializeField]
     // private AudioSource footStepNoises;
@@ -30,10 +25,6 @@ public class PlayerSideScrollMovement : MonoBehaviour
     private Vector3 playerVelocity;
     private bool IsGrounded;
     private Vector3 moveForce;
-
-    bool m_HitDetect;
-    RaycastHit HitInfo;
-    
 
     // Animator animator;
 
@@ -82,41 +73,15 @@ public class PlayerSideScrollMovement : MonoBehaviour
     }
 
     private void SetIsGrounded() {
-        // IsGrounded = Mathf.Approximately(rb.velocity.y,0);
-        m_HitDetect = Physics.BoxCast(transform.position, m_HitBox, Vector3.down, out HitInfo, Quaternion.identity, transform.localScale.y);
-        if(m_HitDetect) {
-            // Debug.Log(HitInfo.collider.tag);
-            IsGrounded = HitInfo.collider.CompareTag("Platform") && rb.velocity.y < 0.1f && rb.velocity.y > -0.1f;
-        } else {
-            IsGrounded = false;
-        }
+        // Debug.Log("Y-Vel: " + rb.velocity + "\nY-Force: " + rb.GetAccumulatedForce().y);
+        // IsGrounded = Mathf.Approximately(rb.velocity.y,0) && Mathf.Approximately(rb.GetAccumulatedForce().y,0);
+        Debug.Log("Y-Vel: " + rb.velocity);
+        IsGrounded = Mathf.Approximately(rb.velocity.y,0);
         
     }
 
     private void ApplyMoreGravity()
     {
-        rb.AddForce(Physics.gravity * additionalGravityMultiplier,ForceMode.Force);
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-
-        //Check if there has been a hit yet
-        if (m_HitDetect)
-        {
-            //Draw a Ray forward from GameObject toward the hit
-            Gizmos.DrawRay(transform.position, Vector3.down * HitInfo.distance);
-            //Draw a cube that extends to where the hit exists
-            Gizmos.DrawWireCube(transform.position + Vector3.down * HitInfo.distance, m_HitBox);
-        }
-        //If there hasn't been a hit yet, draw the ray at the maximum distance
-        else
-        {
-            //Draw a Ray forward from GameObject toward the maximum distance
-            Gizmos.DrawRay(transform.position, Vector3.down * transform.localScale.y);
-            //Draw a cube at the maximum distance
-            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y, m_HitBox);
-        }
+        rb.AddForce(Physics.gravity * gravMult,ForceMode.Force);
     }
 }
