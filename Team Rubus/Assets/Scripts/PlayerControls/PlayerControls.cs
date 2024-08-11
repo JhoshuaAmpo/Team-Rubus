@@ -162,6 +162,76 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""DialogueMovement"",
+            ""id"": ""f59702d1-4e69-427e-9574-600eedfce08a"",
+            ""actions"": [
+                {
+                    ""name"": ""Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""b5de47e4-ac9c-4eb9-95c5-e8976ebafe43"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Submit"",
+                    ""type"": ""Button"",
+                    ""id"": ""d872eb1a-4ee0-438e-87f0-ad9ad4c8c6fc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""ad95ff60-727f-4513-af6e-976ffc49aae0"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Up"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""b34335b1-7b84-48b2-8592-03550f7bce6b"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""14f693bd-f646-4df8-957b-1fb56359c4f2"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fec7ccc3-b82d-4bdd-94c6-7f05ec05ad78"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Submit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -174,6 +244,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_Talk = m_Interaction.FindAction("Talk", throwIfNotFound: true);
+        // DialogueMovement
+        m_DialogueMovement = asset.FindActionMap("DialogueMovement", throwIfNotFound: true);
+        m_DialogueMovement_Up = m_DialogueMovement.FindAction("Up", throwIfNotFound: true);
+        m_DialogueMovement_Submit = m_DialogueMovement.FindAction("Submit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -339,6 +413,60 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public InteractionActions @Interaction => new InteractionActions(this);
+
+    // DialogueMovement
+    private readonly InputActionMap m_DialogueMovement;
+    private List<IDialogueMovementActions> m_DialogueMovementActionsCallbackInterfaces = new List<IDialogueMovementActions>();
+    private readonly InputAction m_DialogueMovement_Up;
+    private readonly InputAction m_DialogueMovement_Submit;
+    public struct DialogueMovementActions
+    {
+        private @PlayerControls m_Wrapper;
+        public DialogueMovementActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Up => m_Wrapper.m_DialogueMovement_Up;
+        public InputAction @Submit => m_Wrapper.m_DialogueMovement_Submit;
+        public InputActionMap Get() { return m_Wrapper.m_DialogueMovement; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogueMovementActions set) { return set.Get(); }
+        public void AddCallbacks(IDialogueMovementActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DialogueMovementActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DialogueMovementActionsCallbackInterfaces.Add(instance);
+            @Up.started += instance.OnUp;
+            @Up.performed += instance.OnUp;
+            @Up.canceled += instance.OnUp;
+            @Submit.started += instance.OnSubmit;
+            @Submit.performed += instance.OnSubmit;
+            @Submit.canceled += instance.OnSubmit;
+        }
+
+        private void UnregisterCallbacks(IDialogueMovementActions instance)
+        {
+            @Up.started -= instance.OnUp;
+            @Up.performed -= instance.OnUp;
+            @Up.canceled -= instance.OnUp;
+            @Submit.started -= instance.OnSubmit;
+            @Submit.performed -= instance.OnSubmit;
+            @Submit.canceled -= instance.OnSubmit;
+        }
+
+        public void RemoveCallbacks(IDialogueMovementActions instance)
+        {
+            if (m_Wrapper.m_DialogueMovementActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDialogueMovementActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DialogueMovementActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DialogueMovementActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DialogueMovementActions @DialogueMovement => new DialogueMovementActions(this);
     public interface IMovementActions
     {
         void OnForward(InputAction.CallbackContext context);
@@ -348,5 +476,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IInteractionActions
     {
         void OnTalk(InputAction.CallbackContext context);
+    }
+    public interface IDialogueMovementActions
+    {
+        void OnUp(InputAction.CallbackContext context);
+        void OnSubmit(InputAction.CallbackContext context);
     }
 }
