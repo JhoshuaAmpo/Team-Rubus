@@ -28,7 +28,8 @@ public class PlayerSideScrollMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector3 playerVelocity;
-    private bool IsGrounded;
+    public bool IsGrounded;
+    public PhysicMaterial nonstick;
     private Vector3 moveForce;
 
     bool m_HitDetect;
@@ -63,6 +64,15 @@ public class PlayerSideScrollMovement : MonoBehaviour
         Move();
         if(!IsGrounded) {
             ApplyMoreGravity();
+        }
+
+        if (IsGrounded)
+        {
+            nonstick.dynamicFriction = 0;
+        }
+        else
+        {
+            nonstick.dynamicFriction = 1;
         }
     }
 
