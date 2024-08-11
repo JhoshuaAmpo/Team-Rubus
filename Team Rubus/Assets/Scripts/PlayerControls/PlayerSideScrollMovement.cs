@@ -73,11 +73,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
     }
 
     private void SetIsGrounded() {
-        // Debug.Log("Y-Vel: " + rb.velocity + "\nY-Force: " + rb.GetAccumulatedForce().y);
-        // IsGrounded = Mathf.Approximately(rb.velocity.y,0) && Mathf.Approximately(rb.GetAccumulatedForce().y,0);
-        Debug.Log("Y-Vel: " + rb.velocity);
         IsGrounded = Mathf.Approximately(rb.velocity.y,0);
-        
     }
 
     private void ApplyMoreGravity()
