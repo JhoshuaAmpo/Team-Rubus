@@ -46,6 +46,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void ProcessDeath()
     {
-        Debug.Log("Player Has Died!");
+        // Debug.Log("Player Has Died!");
     }
 }

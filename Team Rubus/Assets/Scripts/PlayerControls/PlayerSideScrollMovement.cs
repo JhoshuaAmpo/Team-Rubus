@@ -23,7 +23,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
     PlayerControls playerControls;
 
     private Rigidbody rb;
-    private BoxCollider boxCollider;
+    private CapsuleCollider capsuleCollider;
     private Vector3 playerVelocity;
     private bool IsGrounded;
     private Vector3 moveForce;
@@ -37,8 +37,8 @@ public class PlayerSideScrollMovement : MonoBehaviour
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
-        boxCollider = GetComponent<BoxCollider>();
-        groundDetectingBox = new(boxCollider.size.x * groundDetectBoxMultiplier.x, boxCollider.size.y * groundDetectBoxMultiplier.y, boxCollider.size.z * groundDetectBoxMultiplier.z);
+        capsuleCollider = GetComponent<CapsuleCollider>();
+        groundDetectingBox = new(capsuleCollider.radius * groundDetectBoxMultiplier.x, capsuleCollider.height * groundDetectBoxMultiplier.y, capsuleCollider.radius * groundDetectBoxMultiplier.z);
 
         playerControls = new();
         playerControls.Movement.Enable();
@@ -84,7 +84,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
     private void SetIsGrounded() {
         // IsGrounded = Mathf.Approximately(rb.velocity.y,0);
         // m_HitDetect = Physics.BoxCast(transform.position, groundDetectBoxMultiplier, Vector3.down, out HitInfo, Quaternion.identity, collider);
-        m_HitDetect = Physics.BoxCast(transform.position, groundDetectingBox, Vector3.down, out HitInfo, Quaternion.identity, boxCollider.size.y);
+        m_HitDetect = Physics.BoxCast(transform.position, groundDetectingBox, Vector3.down, out HitInfo, Quaternion.identity, capsuleCollider.height);
         if(m_HitDetect) {
             // Debug.Log(HitInfo.collider.tag);
             IsGrounded = HitInfo.collider.CompareTag("Platform") && rb.velocity.y < 0.1f && rb.velocity.y > -0.1f;
@@ -114,11 +114,11 @@ public class PlayerSideScrollMovement : MonoBehaviour
         //If there hasn't been a hit yet, draw the ray at the maximum distance
         else
         {
-            if(!boxCollider) { return; }
+            if(!capsuleCollider) { return; }
             //Draw a Ray forward from GameObject toward the maximum distance
-            Gizmos.DrawRay(transform.position, Vector3.down * boxCollider.size.y);
+            Gizmos.DrawRay(transform.position, Vector3.down * capsuleCollider.height);
             //Draw a cube at the maximum distance
-            Gizmos.DrawWireCube(transform.position + Vector3.down * boxCollider.size.y, groundDetectingBox);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * capsuleCollider.height, groundDetectingBox);
         }
     }
 }
