@@ -6,6 +6,8 @@ using Ink.Runtime;
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -14,12 +16,17 @@ public class DialogueManager : MonoBehaviour
     [Header("Dialogue UI")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [Header("Dialogue UI")]
     [SerializeField] private GameObject[] choices;
 
-    public bool DialougeIsPLaying {get; private set;}
+    [SerializeField] private GameObject LeftPortrait;
+    [SerializeField] private TextMeshProUGUI speakerName;
+
+    public bool DialougeIsPlaying {get; private set;}
 
     private TextMeshProUGUI[] choicesText;
     private Story currentStory;
+    private Sprite portraitImg;
 
 
     private const string SPEAKER_TAG = "speaker";
@@ -49,7 +56,7 @@ public class DialogueManager : MonoBehaviour
     }
 
     private void Start() {
-        DialougeIsPLaying = false;
+        DialougeIsPlaying = false;
         dialoguePanel.SetActive(false);
 
         choicesText = new TextMeshProUGUI[choices.Length];
@@ -60,16 +67,23 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON) {
+    private void Update() {
+        if(!DialougeIsPlaying) { return;}
+
+
+    }
+
+    public void EnterDialogueMode(TextAsset inkJSON, Sprite portrait) {
         currentStory = new Story(inkJSON.text);
-        DialougeIsPLaying = true;
+        portraitImg = portrait;
+        DialougeIsPlaying = true;
         dialoguePanel.SetActive(true);
         ContinueStory();
     }
 
     private void ExitDialogueMode()
     {
-        DialougeIsPLaying = false;
+        DialougeIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
     }
@@ -82,10 +96,42 @@ public class DialogueManager : MonoBehaviour
     private void ContinueStory() {
         if (currentStory.canContinue) {
             dialogueText.text = currentStory.Continue();
+            HandleTages(currentStory.currentTags);
             DisplayChoices();
         }
         else {
             ExitDialogueMode();
+        }
+    }
+
+    private void HandleTages(List<string> currentTags)
+    {
+        foreach (string tag in currentTags) 
+        {
+            // parse the tag
+            string[] splitTag = tag.Split(':');
+            if (splitTag.Length != 2) 
+            {
+                Debug.LogError("Tag could not be appropriately parsed: " + tag);
+            }
+            string tagKey = splitTag[0].Trim();
+            string tagValue = splitTag[1].Trim();
+            
+            // handle the tag
+            switch (tagKey) 
+            {
+                case SPEAKER_TAG:
+                    speakerName.text = tagValue;
+                    break;
+                case PORTRAIT_TAG:
+                    LeftPortrait.GetComponent<UnityEngine.UI.Image>().sprite = portraitImg;
+                    break;
+                case LAYOUT_TAG:
+                    break;
+                default:
+                    Debug.LogWarning("Tag came in but is not currently being handled: " + tag);
+                    break;
+            }
         }
     }
 
@@ -120,5 +166,6 @@ public class DialogueManager : MonoBehaviour
 
     public void MakeChoice(int choiceIndex) {
         currentStory.ChooseChoiceIndex(choiceIndex);
+        ContinueStory();
     }
 }

@@ -67,14 +67,14 @@ public class PlayerSideScrollMovement : MonoBehaviour
     }
 
     private void Move(){
-        if (DialogueManager.Instance.DialougeIsPLaying) { return; }
+        if (DialogueManager.Instance.DialougeIsPlaying) { return; }
         int sideDir = (int)playerControls.Movement.Strafe.ReadValue<float>();
         moveForce = moveSpeed * sideDir * transform.right;
         rb.AddForce(moveForce,ForceMode.Force);
     }
 
     private void ActivateJump(InputAction.CallbackContext context) {
-        if (DialogueManager.Instance.DialougeIsPLaying) { return; }
+        if (DialogueManager.Instance.DialougeIsPlaying) { return; }
         Jump();
     }
 
@@ -123,5 +123,8 @@ public class PlayerSideScrollMovement : MonoBehaviour
             //Draw a cube at the maximum distance
             Gizmos.DrawWireCube(transform.position + Vector3.down * capsuleCollider.height, groundDetectingBox);
         }
+    }
+    public void MultiplyJumpForce(float mult) {
+        jumpForce *= mult;
     }
 }

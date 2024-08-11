@@ -27,6 +27,7 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (DialogueManager.Instance.DialougeIsPlaying) { return; }
         Decay();   
     }
 
@@ -42,6 +43,10 @@ public class PlayerHealth : MonoBehaviour
         if (currentHP <= 0) {
             ProcessDeath();
         }
+    }
+
+    public void MultiplyDecayRate(float m) {
+        rateOfDecay *= m;
     }
 
     private void ProcessDeath()
