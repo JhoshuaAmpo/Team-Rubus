@@ -19,11 +19,11 @@ public class PlayerSideScrollMovement : MonoBehaviour
 
     // [SerializeField]
     // private AudioSource footStepNoises;
-    PlayerControls playerControls;
+    public PlayerControls playerControls;
 
     private Rigidbody rb;
     private Vector3 playerVelocity;
-    private bool IsGrounded;
+    public bool IsGrounded;
     private Vector3 moveForce;
 
     // Animator animator;
