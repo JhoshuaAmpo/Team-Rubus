@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEditor.UI;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,6 +20,9 @@ public class DialogueTrigger : MonoBehaviour
 
     [SerializeField]
     private Sprite portrait;
+
+    [SerializeField]
+    private UnityEnginImage blackScreen;
 
     [Header("Ink JSON")]
     [SerializeField]
@@ -74,11 +79,23 @@ public class DialogueTrigger : MonoBehaviour
                     player.GetComponent<PlayerHealth>().DecreaseHealth(60f);
                 break;
                 case NPC.Oran:
+                    StartCoroutine(ProcessEnd());
                 break;
                 default:
                 break;
             }
             gameObject.GetComponent<DialogueTrigger>().enabled = false;
+        }
+    }
+
+    private IEnumerator ProcessEnd() {
+        blackScreen.s = true;
+        float countdown = 60f;
+        float fadeRate = 1/60f;
+        while (countdown > 0) {
+            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a - fadeRate * Time.deltaTime);
+            countdown -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
         }
     }
 }
