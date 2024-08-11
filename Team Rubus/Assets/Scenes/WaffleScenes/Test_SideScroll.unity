@@ -465,8 +465,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  jumpForce: 20
-  gravMult: 0
+  jumpForce: 19
+  additionalGravityMultiplier: 0
   m_MaxDistance: 1
   m_HitBox: {x: 0.9, y: 0.2, z: 0.5}
 --- !u!54 &202901417
