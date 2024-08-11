@@ -13,12 +13,14 @@ public class PlayerSideScrollMovement : MonoBehaviour
     [SerializeField]
     private float jumpForce;
     [SerializeField]
-    [Tooltip("Determines additional gravity to be applied. 0 = Normal Gravity, 1 = Double Gravity")]
     [Range(0, 10)]
-    private float gravMult;
+    [Tooltip("Determines additional gravity to be applied. 0 = Normal Gravity, 1 = Double Gravity")]
+    private float additionalGravityMultiplier;
 
     [SerializeField]
     float m_MaxDistance;
+    [SerializeField]
+    Vector3 m_HitBox;
 
     // [SerializeField]
     // private AudioSource footStepNoises;
@@ -81,7 +83,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
 
     private void SetIsGrounded() {
         // IsGrounded = Mathf.Approximately(rb.velocity.y,0);
-        m_HitDetect = Physics.BoxCast(transform.position, transform.localScale * 0.1f, Vector3.down, out HitInfo, Quaternion.identity, transform.localScale.y);
+        m_HitDetect = Physics.BoxCast(transform.position, m_HitBox, Vector3.down, out HitInfo, Quaternion.identity, transform.localScale.y);
         if(m_HitDetect) {
             // Debug.Log(HitInfo.collider.tag);
             IsGrounded = HitInfo.collider.CompareTag("Platform") && rb.velocity.y < 0.1f && rb.velocity.y > -0.1f;
@@ -93,7 +95,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
 
     private void ApplyMoreGravity()
     {
-        rb.AddForce(Physics.gravity * gravMult,ForceMode.Force);
+        rb.AddForce(Physics.gravity * additionalGravityMultiplier,ForceMode.Force);
     }
 
     void OnDrawGizmos()
@@ -106,7 +108,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
             //Draw a Ray forward from GameObject toward the hit
             Gizmos.DrawRay(transform.position, Vector3.down * HitInfo.distance);
             //Draw a cube that extends to where the hit exists
-            Gizmos.DrawWireCube(transform.position + Vector3.down * HitInfo.distance, transform.localScale* 0.1f);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * HitInfo.distance, m_HitBox);
         }
         //If there hasn't been a hit yet, draw the ray at the maximum distance
         else
@@ -114,7 +116,7 @@ public class PlayerSideScrollMovement : MonoBehaviour
             //Draw a Ray forward from GameObject toward the maximum distance
             Gizmos.DrawRay(transform.position, Vector3.down * transform.localScale.y);
             //Draw a cube at the maximum distance
-            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y, transform.localScale* 0.1f);
+            Gizmos.DrawWireCube(transform.position + Vector3.down * transform.localScale.y, m_HitBox);
         }
     }
 }
