@@ -22,6 +22,6 @@ public class SceneLoader : MonoBehaviour
         backdropFade.SetTrigger("BDFadeIn");
         buttonsAnim.SetTrigger("ButtonsMoveOut");
         yield return new WaitForSeconds(2);
-        Debug.Log("Next scene!");
+        SceneManager.LoadScene(1);
     }
 }

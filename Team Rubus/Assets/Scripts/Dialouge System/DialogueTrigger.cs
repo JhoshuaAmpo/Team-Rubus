@@ -22,7 +22,7 @@ public class DialogueTrigger : MonoBehaviour
     private Sprite portrait;
 
     [SerializeField]
-    private UnityEnginImage blackScreen;
+    private Image blackScreen;
 
     [Header("Ink JSON")]
     [SerializeField]
@@ -89,11 +89,11 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     private IEnumerator ProcessEnd() {
-        blackScreen.s = true;
+        //blackScreen.s = true;
         float countdown = 60f;
         float fadeRate = 1/60f;
         while (countdown > 0) {
-            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a - fadeRate * Time.deltaTime);
+            //blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a - fadeRate * Time.deltaTime);
             countdown -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
