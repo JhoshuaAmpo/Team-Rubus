@@ -22,7 +22,7 @@ public class DialogueTrigger : MonoBehaviour
     private Sprite portrait;
 
     [SerializeField]
-    private Image blackScreen;
+    private UnityEngine.UI.Image blackScreen;
 
     [Header("Ink JSON")]
     [SerializeField]
@@ -42,6 +42,7 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     private void Start() {
+        blackScreen.enabled = false;
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -79,6 +80,7 @@ public class DialogueTrigger : MonoBehaviour
                     player.GetComponent<PlayerHealth>().DecreaseHealth(60f);
                 break;
                 case NPC.Oran:
+                    if (blackScreen.enabled) { break; }
                     StartCoroutine(ProcessEnd());
                 break;
                 default:
@@ -89,11 +91,13 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     private IEnumerator ProcessEnd() {
-        //blackScreen.s = true;
+        
+        blackScreen.enabled = true;
         float countdown = 60f;
-        float fadeRate = 1/60f;
+        float fadeRate = 2/60f;
+        blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, 0);
         while (countdown > 0) {
-            //blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a - fadeRate * Time.deltaTime);
+            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a + fadeRate * Time.deltaTime);
             countdown -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
