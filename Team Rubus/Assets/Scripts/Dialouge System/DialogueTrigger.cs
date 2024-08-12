@@ -1,9 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
-using UnityEditor.UI;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
