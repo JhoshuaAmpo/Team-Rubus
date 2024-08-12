@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Collider))]
 public class DialogueTrigger : MonoBehaviour
 {
-    public enum NPC {Syl, Luna, Oran}
+    public enum NPC {None, Syl, Luna, Oran}
     [SerializeField]
     private NPC npc;
 
@@ -42,7 +42,9 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     private void Start() {
-        blackScreen.enabled = false;
+        if(blackScreen) {
+            blackScreen.enabled = false;
+        }
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
