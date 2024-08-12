@@ -16,10 +16,14 @@ public class PlayerHealth : MonoBehaviour
     [Tooltip("Health Loss Per Second")]
     private float rateOfDecay;
 
+    [SerializeField]
+    private Canvas deathCanvas;
+
     private float currentHP;
     // Start is called before the first frame update
     void Start()
     {
+        deathCanvas.enabled = false;
         currentHP = maxHP;
         hpBar.SetBar(currentHP/ maxHP);
     }
@@ -51,6 +55,6 @@ public class PlayerHealth : MonoBehaviour
 
     private void ProcessDeath()
     {
-        // Debug.Log("Player Has Died!");
+        deathCanvas.enabled = true;
     }
 }
