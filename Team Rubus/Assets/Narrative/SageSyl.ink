@@ -34,5 +34,4 @@ Keen observation. Perhaps you are indeed Zinnia and Showl’s daughter. #speaker
 
 ===Dovetail=== 
 Very well. I am Syl, keeper of the absorption elixir. I pray you use it to bring sustenance back to Elowyn. #speaker: Syl #portrait: _syl #layout: right
-
-    -> END
+-> END
