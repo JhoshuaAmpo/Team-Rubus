@@ -45,7 +45,6 @@ public class DialogueTrigger : MonoBehaviour
 
 
     private void OnTriggerEnter(Collider other) {
-        Debug.Log(other.name +  " has entered my box!");
         if (other.CompareTag("Player")) {
             playerInRange = true;
             visualCue.SetActive(true);
@@ -53,7 +52,6 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     private void OnTriggerExit(Collider other) {
-        Debug.Log(other.name +  " has exited my box!");
         if (other.CompareTag("Player")) {
             playerInRange = false;
             visualCue.SetActive(false);

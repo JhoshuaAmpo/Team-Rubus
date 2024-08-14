@@ -21,12 +21,12 @@ public class AnimationController : MonoBehaviour
         {
             spriteRenderer.flipX = true;
             anim.SetBool("Run", true);
-            Debug.Log("I can run");
+            // Debug.Log("I can run");
         }
         else if (Input.GetKeyUp(KeyCode.A))
         {
             anim.SetBool("Run", false);
-            Debug.Log("No run");
+            // Debug.Log("No run");
         }
 
 
