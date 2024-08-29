@@ -90,10 +90,13 @@ public class DialogueManager : MonoBehaviour
 
     private void ActivateContinueStory(InputAction.CallbackContext context)
     {
-        ContinueStory();
+        if (DialougeIsPlaying) {
+            ContinueStory();
+        }
     }
 
     private void ContinueStory() {
+        Debug.Log("Can story continue? " + currentStory.canContinue);
         if (currentStory.canContinue) {
             dialogueText.text = currentStory.Continue();
             HandleTages(currentStory.currentTags);
