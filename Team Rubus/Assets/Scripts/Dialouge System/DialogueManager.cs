@@ -35,6 +35,8 @@ public class DialogueManager : MonoBehaviour
 
     private PlayerControls playerControls;
 
+    GameObject currentNPCGameObject;
+
     private void Awake() {
         if (Instance != null)
         {
@@ -58,6 +60,7 @@ public class DialogueManager : MonoBehaviour
     private void Start() {
         DialougeIsPlaying = false;
         dialoguePanel.SetActive(false);
+        currentNPCGameObject = null;
 
         choicesText = new TextMeshProUGUI[choices.Length];
         int index = 0;
@@ -73,7 +76,8 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, Sprite portrait) {
+    public void EnterDialogueMode(TextAsset inkJSON, Sprite portrait, GameObject npcGO) {
+        // currentNPCGameObject = npcGO;
         currentStory = new Story(inkJSON.text);
         portraitImg = portrait;
         DialougeIsPlaying = true;
@@ -86,6 +90,9 @@ public class DialogueManager : MonoBehaviour
         DialougeIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
+        // currentNPCGameObject.SetActive(false);
+        // currentNPCGameObject = null;
+        // currentStory = null;
     }
 
     private void ActivateContinueStory(InputAction.CallbackContext context)

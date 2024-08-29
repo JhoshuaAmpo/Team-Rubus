@@ -2,8 +2,6 @@
 
 ===SageSylInteraction===
 
-Text that gets skipped for some reason
-
 I seek three sages of legend, Syl, Luna, and Oran. I desire to save our dying wood. Might you be a sage that I seek?  #speaker: Xanthe #portrait: _xanthe #layout: left
 
 

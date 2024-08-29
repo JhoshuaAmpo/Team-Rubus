@@ -17,7 +17,8 @@ public class DialogueTrigger : MonoBehaviour
     private Sprite portrait;
 
     [SerializeField]
-    private UnityEngine.UI.Image blackScreen;
+    private EndGameFadeToBlack endGameFadeToBlack;
+    
 
     [Header("Ink JSON")]
     [SerializeField]
@@ -31,15 +32,12 @@ public class DialogueTrigger : MonoBehaviour
     private void Awake() {
         playerInRange = false;
         playerControls = new();
-        playerControls.Interaction.Enable();
         playerControls.Interaction.Talk.performed += ActivateTalk;
         visualCue.SetActive(false);
     }
 
     private void Start() {
-        if(blackScreen) {
-            blackScreen.enabled = false;
-        }
+        
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -48,6 +46,7 @@ public class DialogueTrigger : MonoBehaviour
         if (other.CompareTag("Player")) {
             playerInRange = true;
             visualCue.SetActive(true);
+            playerControls.Interaction.Enable();
         }
     }
 
@@ -55,6 +54,7 @@ public class DialogueTrigger : MonoBehaviour
         if (other.CompareTag("Player")) {
             playerInRange = false;
             visualCue.SetActive(false);
+            playerControls.Interaction.Disable();
         }
     }
 
@@ -62,39 +62,29 @@ public class DialogueTrigger : MonoBehaviour
     {
         if(playerInRange && !DialogueManager.Instance.DialougeIsPlaying) {
             visualCue.SetActive(true);
-            DialogueManager.Instance.EnterDialogueMode(inkJSON,portrait);
+            DialogueManager.Instance.EnterDialogueMode(inkJSON,portrait, this.gameObject);
             switch (npc) {
                 case NPC.Syl:
                     Debug.Log("Talking to Syl");
                     player.GetComponent<PlayerSideScrollMovement>().MultiplyJumpForce(1.5f);
                     player.GetComponent<PlayerHealth>().DecreaseHealth(30f);
+                    gameObject.GetComponent<DialogueTrigger>().enabled = false;
                 break;
                 case NPC.Luna:
                     Debug.Log("Talking to Luna");
                     player.GetComponent<PlayerHealth>().MultiplyDecayRate(0.5f);
                     player.GetComponent<PlayerHealth>().DecreaseHealth(60f);
+                    gameObject.GetComponent<DialogueTrigger>().enabled = false;
                 break;
                 case NPC.Oran:
-                    if (blackScreen.enabled) { break; }
-                    StartCoroutine(ProcessEnd());
+                    endGameFadeToBlack.ProcessEnd();
                 break;
                 default:
                 break;
             }
-            gameObject.GetComponent<DialogueTrigger>().enabled = false;
+            playerControls.Interaction.Disable();
         }
     }
 
-    private IEnumerator ProcessEnd() {
-        
-        blackScreen.enabled = true;
-        float countdown = 60f;
-        float fadeRate = 2/60f;
-        blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, 0);
-        while (countdown > 0) {
-            blackScreen.color = new Color(blackScreen.color.r, blackScreen.color.g, blackScreen.color.b, blackScreen.color.a + fadeRate * Time.deltaTime);
-            countdown -= Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
+    
 }
